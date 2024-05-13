@@ -22,19 +22,34 @@ if (!fs.existsSync(directory)) {
 
 app.use(
   cors({
-    origin: [process.env.OriginRoute],
+    origin:
+      process.env.OriginRoute || "https://wjslikenewswebsite.netlify.app/",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
     optionSuccessStatus: 200,
   })
 );
 
+// CORS configuration using custom middleware
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.OriginRoute || "https://wjslikenewswebsite.netlify.app"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 //Error middleware
 app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -54,6 +69,21 @@ app.use("/api/users", require("./Routes/UserRoutes/userUpdateRoute"));
 app.use("/api/users", require("./Routes/UserRoutes/deleteUserRoute"));
 app.use("/api/users", require("./Routes/UserRoutes/getSingleUserRoute"));
 app.use("/api/users", require("./Routes/UserRoutes/updateUserAccessStatus"));
+app.use("/api/users", require("./Routes/UserRoutes/getUserLayoutRoute"));
+app.use("/api/users", require("./Routes/UserRoutes/updateUserLayoutRoute"));
+//subscription
+app.use(
+  "/api/users",
+  require("./Routes/userSubscriptionRoute/userSubscriptionRoute")
+);
+app.use(
+  "/api/users",
+  require("./Routes/userSubscriptionRoute/getSubscriptionDetails")
+);
+app.use(
+  "/api/users",
+  require("./Routes/userSubscriptionRoute/getUserSubscription")
+);
 //newsRoutes
 app.use("/api/news", require("./Routes/NewsRoutes/publishNewsRoute"));
 app.use("/api/news", require("./Routes/NewsRoutes/editNewsRoute"));

@@ -22,6 +22,7 @@ const getSingleNewsController = asyncHandler(async (req, res) => {
       contact,
       email,
       details,
+      createdAt,
     } = news;
     const category = await Category.find({ news: _id });
     res.status(200).json({
@@ -40,6 +41,7 @@ const getSingleNewsController = asyncHandler(async (req, res) => {
       contact,
       email,
       details,
+      createdAt,
     });
   } else {
     res.status(404).json({ message: "News not Found" });

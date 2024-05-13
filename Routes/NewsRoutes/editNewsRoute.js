@@ -4,7 +4,7 @@ const { upload } = require("../../Utils/fileUpload");
 
 const router = require("express").Router();
 
-router.put(
+router.patch(
   "/updateNews/:id",
   protectedRoute,
   upload.fields([

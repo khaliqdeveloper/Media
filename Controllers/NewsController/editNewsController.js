@@ -24,36 +24,46 @@ const editNewsController = asyncHandler(async (req, res) => {
     email,
     details,
   } = req.body;
-  console.log(req.body);
+  
+
+  const existingNews = await News.findById(id);
 
   const updatedFiles = [];
-  if (req.files) {
-    if (req.files["image"] && req.files["image"][0]) {
-      const imageFile = req.files["image"][0];
-      const imageResult = await cloudinary.uploader.upload(imageFile.path, {
-        folder: "uploads",
-        resource_type: "auto",
-      });
-      updatedFiles.push({
-        fileName: imageResult.original_filename,
-        fileType: imageResult.resource_type,
-        filePath: imageResult.secure_url,
-        fileSize: imageResult.bytes,
-      });
-    }
-    if (req.files["video"] && req.files["video"][0]) {
-      const videoFile = req.files["video"][0];
-      const videoResult = await cloudinary.uploader.upload(videoFile.path, {
-        folder: "uploads",
-        resource_type: "auto",
-      });
-      updatedFiles.push({
-        fileName: videoResult.original_filename,
-        fileType: videoResult.resource_type,
-        filePath: videoResult.secure_url,
-        fileSize: videoResult.bytes,
-      });
-    }
+
+  // Handle image update
+  if (req.files["image"] && req.files["image"][0]) {
+    const imageFile = req.files["image"][0];
+    const imageResult = await cloudinary.uploader.upload(imageFile.path, {
+      folder: "uploads",
+      resource_type: "auto",
+    });
+    updatedFiles.push({
+      fileName: imageResult.original_filename,
+      fileType: imageResult.resource_type,
+      filePath: imageResult.secure_url,
+      fileSize: imageResult.bytes,
+    });
+  } else {
+    // If no new image provided, retain the previous one
+    updatedFiles.push(...existingNews.image);
+  }
+
+  // Handle video update
+  if (req.files["video"] && req.files["video"][0]) {
+    const videoFile = req.files["video"][0];
+    const videoResult = await cloudinary.uploader.upload(videoFile.path, {
+      folder: "uploads",
+      resource_type: "auto",
+    });
+    updatedFiles.push({
+      fileName: videoResult.original_filename,
+      fileType: videoResult.resource_type,
+      filePath: videoResult.secure_url,
+      fileSize: videoResult.bytes,
+    });
+  } else {
+    // If no new video provided, retain the previous one
+    updatedFiles.push(...existingNews.video);
   }
 
   const updatedNews = await News.findByIdAndUpdate(
@@ -65,8 +75,8 @@ const editNewsController = asyncHandler(async (req, res) => {
       datelineCountry,
       companyName,
       companyUrl,
-      image: updatedFiles?.filter((file) => file.fileType.startsWith("image")),
-      video: updatedFiles?.filter((file) => file.fileType.startsWith("video")),
+      image: updatedFiles.filter((file) => file.fileType.startsWith("image")),
+      video: updatedFiles.filter((file) => file.fileType.startsWith("video")),
       mediaContactUrl,
       contact,
       email,
@@ -81,9 +91,10 @@ const editNewsController = asyncHandler(async (req, res) => {
     { $setOnInsert: { category } }, // Define category if not previously defined
     { new: true, upsert: true }
   );
-
+  console.log(updatedCategory);
   // Return updated news data and category
   res.status(200).json({ news: updatedNews, category: updatedCategory });
 });
+
 
 module.exports = editNewsController;
