@@ -86,11 +86,11 @@ const editNewsController = asyncHandler(async (req, res) => {
   );
 
   // Update news category if necessary
-  const updatedCategory = await Category.findOneAndUpdate(
-    { news: id }, // Search condition
-    { $setOnInsert: { category } }, // Define category if not previously defined
-    { new: true, upsert: true }
-  );
+const updatedCategory = await Category.findOneAndUpdate(
+  { news: id }, // Search condition
+  { $set: { category: category } }, // Update operation to set the category field
+  { new: true } // Return the modified document after update
+);
   console.log(updatedCategory);
   // Return updated news data and category
   res.status(200).json({ news: updatedNews, category: updatedCategory });

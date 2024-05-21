@@ -1,10 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../../Model/UserModel");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const generateToken = (id) => {
   // console.log(id);
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+};
+//Generate UrlId
+
+const generateUrlId = (email) => {
+  return crypto.createHash("sha256").update(email).digest("hex");
 };
 
 const registerController = asyncHandler(async (req, res) => {
@@ -27,12 +33,16 @@ const registerController = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
+  //create UrlId
+  const urlId = generateUrlId(email);
+
   //create user
   const newUser = await User.create({
     name,
     email,
     password,
     role,
+    urlId,
   });
 
   //   creating jwt token
@@ -62,4 +72,4 @@ const registerController = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerController, generateToken };
+module.exports = { registerController, generateToken, generateUrlId };

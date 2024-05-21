@@ -46,6 +46,16 @@ const UserSchema = mongoose.Schema(
       required: true,
       default: "default",
     },
+    journalName: {
+      type: String,
+      required: true,
+      default: "News Journal",
+    },
+    urlId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,

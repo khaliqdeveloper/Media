@@ -3,6 +3,7 @@ const User = require("../../Model/UserModel");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("./registerController");
 
+
 const loginController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 

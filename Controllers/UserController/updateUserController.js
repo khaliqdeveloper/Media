@@ -18,6 +18,7 @@ const updateUserController = asyncHandler(async (req, res) => {
   }
 
   user.name = req.body.name || user.name;
+  user.journalName = req.body.journalName || user.journalName;
 
   if (req.files["image"] && req.files["image"][0]) {
     const imageFile = req.files["image"][0];
@@ -45,14 +46,14 @@ const updateUserController = asyncHandler(async (req, res) => {
     // Save the updated user data
     const updatedUser = await user.save();
 
-    // Respond with updated user information
     res.status(200).json({
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
       photo: updatedUser.photo,
-      updatedFiles: updatedFiles || [], // Include uploaded file information if available
+      journalName: updatedUser.journalName,
+      updatedFiles: updatedFiles || [],
     });
   } catch (error) {
     console.error("Error saving user data:", error);

@@ -71,6 +71,7 @@ app.use("/api/users", require("./Routes/UserRoutes/getSingleUserRoute"));
 app.use("/api/users", require("./Routes/UserRoutes/updateUserAccessStatus"));
 app.use("/api/users", require("./Routes/UserRoutes/getUserLayoutRoute"));
 app.use("/api/users", require("./Routes/UserRoutes/updateUserLayoutRoute"));
+app.use("/api/users", require("./Routes/UserRoutes/getNewsUrlAndHeading"));
 //subscription
 app.use(
   "/api/users",
@@ -92,6 +93,8 @@ app.use("/api/news", require("./Routes/NewsRoutes/getUserNewsRoute"));
 app.use("/api/news", require("./Routes/NewsRoutes/getSingleNews"));
 app.use("/api/news", require("./Routes/NewsRoutes/getAllNewsRoute"));
 app.use("/api/news", require("./Routes/NewsRoutes/publishNewsStatusRoute"));
+app.use("/api/news", require("./Routes/NewsRoutes/videoDeleteRoute"));
+app.use("/api/news", require("./Routes/NewsRoutes/imageDeleteRoute"));
 //categories
 app.use("/api/news", require("./Routes/CategoryRoutes/getAllCategoriesRoute"));
 app.use("/api/news", require("./Routes/CategoryRoutes/addCategoryRoute"));
